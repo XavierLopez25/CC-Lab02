@@ -4,8 +4,8 @@ prog: stat+ ;
 
 stat: expr NEWLINE ;
 
-expr: expr op=('*'|'/') expr       # MulDiv
-    | expr op=('+'|'-') expr       # AddSub
+expr: expr op=('*'|'/'|'%') expr   # MulDivMod
+    | expr op=('+'|'-'|'^') expr   # AddSubPow
     | INT                          # Int
     | FLOAT                        # Float
     | STRING                       # String

@@ -8,25 +8,53 @@ class TypeCheckListener(SimpleLangListener):
     self.errors = []
     self.types = {}
 
-  def enterMulDiv(self, ctx: SimpleLangParser.MulDivContext):
+  def enterMulDivMod(self, ctx: SimpleLangParser.MulDivModContext):
     pass
 
-  def exitMulDiv(self, ctx: SimpleLangParser.MulDivContext):
-    left_type = self.types[ctx.expr(0)]
-    right_type = self.types[ctx.expr(1)]
-    if not self.is_valid_arithmetic_operation(left_type, right_type):
-      self.errors.append(f"Unsupported operand types for * or /: {left_type} and {right_type}")
-    self.types[ctx] = FloatType() if isinstance(left_type, FloatType) or isinstance(right_type, FloatType) else IntType()
+  def exitMulDivMod(self, ctx: SimpleLangParser.MulDivModContext):
+        left_type  = self.types[ctx.expr(0)]
+        right_type = self.types[ctx.expr(1)]
+        op = ctx.op.text
 
-  def enterAddSub(self, ctx: SimpleLangParser.AddSubContext):
+        if op in ('*', '/'):
+            if not self.is_valid_arithmetic_operation(left_type, right_type):
+                self.errors.append(f"Unsupported operand types for {op}: {left_type} and {right_type}")
+            result = FloatType() if isinstance(left_type, FloatType) or isinstance(right_type, FloatType) else IntType()
+
+        elif op == '%':
+            if not (isinstance(left_type, IntType) and isinstance(right_type, IntType)):
+                self.errors.append(f"Unsupported operand types for %: {left_type} and {right_type}")
+            result = IntType()
+
+        else:
+            self.errors.append(f"Unknown operator {op}")
+            return
+
+        self.types[ctx] = result
+
+  def enterAddSubPow(self, ctx: SimpleLangParser.AddSubPowContext):
     pass
 
-  def exitAddSub(self, ctx: SimpleLangParser.AddSubContext):
-    left_type = self.types[ctx.expr(0)]
-    right_type = self.types[ctx.expr(1)]
-    if not self.is_valid_arithmetic_operation(left_type, right_type):
-      self.errors.append(f"Unsupported operand types for + or -: {left_type} and {right_type}")
-    self.types[ctx] = FloatType() if isinstance(left_type, FloatType) or isinstance(right_type, FloatType) else IntType()
+  def exitAddSubPow(self, ctx: SimpleLangParser.AddSubPowContext):
+        left_type  = self.types[ctx.expr(0)]
+        right_type = self.types[ctx.expr(1)]
+        op = ctx.op.text
+
+        if op in ('+', '-'):
+            if not self.is_valid_arithmetic_operation(left_type, right_type):
+                self.errors.append(f"Unsupported operand types for {op}: {left_type} and {right_type}")
+            result = FloatType() if isinstance(left_type, FloatType) or isinstance(right_type, FloatType) else IntType()
+
+        elif op == '^':
+            if not self.is_valid_arithmetic_operation(left_type, right_type):
+                self.errors.append(f"Unsupported operand types for ^: {left_type} and {right_type}")
+            result = FloatType() if isinstance(left_type, FloatType) or isinstance(right_type, FloatType) else IntType()
+
+        else:
+            self.errors.append(f"Unknown operator {op}")
+            return
+
+        self.types[ctx] = result
 
   def enterInt(self, ctx: SimpleLangParser.IntContext):
     self.types[ctx] = IntType()

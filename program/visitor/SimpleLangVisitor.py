@@ -24,18 +24,13 @@ class SimpleLangVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by SimpleLangParser#MulDivMod.
+    def visitMulDivMod(self, ctx:SimpleLangParser.MulDivModContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by SimpleLangParser#Bool.
     def visitBool(self, ctx:SimpleLangParser.BoolContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by SimpleLangParser#MulDiv.
-    def visitMulDiv(self, ctx:SimpleLangParser.MulDivContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by SimpleLangParser#AddSub.
-    def visitAddSub(self, ctx:SimpleLangParser.AddSubContext):
         return self.visitChildren(ctx)
 
 
@@ -46,6 +41,11 @@ class SimpleLangVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by SimpleLangParser#String.
     def visitString(self, ctx:SimpleLangParser.StringContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by SimpleLangParser#AddSubPow.
+    def visitAddSubPow(self, ctx:SimpleLangParser.AddSubPowContext):
         return self.visitChildren(ctx)
 
 
